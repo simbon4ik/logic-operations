@@ -3,11 +3,13 @@
 #include "library.h"
 
 int main(){
-    string str2 = "(var1 OR var2) AND NOT var3";      //Пробная строка
-    str2 += ' ';    //Чтобы считать последнюю переменную
+    //string str = "var3 OR ((var1 OR var2) AND NOT var3)";      //Пробная строка, где переменные повторяются
+    string str = "(A AND B) OR (C AND NOT D)";                   //Пробная строка по тз
+    //string str = "var4 OR ((var1 OR var2) AND NOT var3)";      //Пробная строка на 4 переменных
+    str += ' ';    //Чтобы считать последнюю переменную
     vector<string> l_vars;  //Вектор переменных
     string l_var;           //Переменная, которую считываем
-    for (char symbol : str2) {
+    for (char symbol : str) {
         if (symbol == '(' || symbol == ')')
             continue;
         if (symbol == ' '){
@@ -19,7 +21,7 @@ int main(){
         l_var += symbol;
     }
 
-    replace_args(str2, l_vars, 0);      //Заменяем аргументы на их значения (0/1)
+    replace_args(str, l_vars, 0);      //Заменяем аргументы на их значения (0/1) и считаем результат
     
     return 0;
 }

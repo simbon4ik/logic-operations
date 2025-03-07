@@ -18,7 +18,7 @@ void replace_args(string str, vector<string> l_vars, int index){        //Фун
     if (index == l_vars.size()){            //Всё заменили
         std::cout << str;
         foo(str);                           //Считаем логические операции
-        std::cout << " -> " << str << std::endl;    //Выводим результат для данных переменных
+        std::cout << "-> " << str << std::endl;    //Выводим результат для данных переменных
         return;
     }
     string l_var = l_vars[index];   //Строка (аргумент) для замены
@@ -28,7 +28,15 @@ void replace_args(string str, vector<string> l_vars, int index){        //Фун
     int pos = 0;           //С какой позиции искать (для find)
     size_t start = str_with_0.find(l_var, pos);
     while (start != std::string::npos){
-        pos += start;
+        pos = start + 1;
+        if (start > 0 && isalpha(str_with_0[start - 1])) {        //Проверка, если переменная "A", чтобы она не была в "AND"
+            start = str_with_0.find(l_var, pos);
+            continue;
+        }
+        if (start + size_l_var < str_with_0.size() && isalpha(str_with_0[start + size_l_var])) {
+            start = str_with_0.find(l_var, pos);
+            continue;
+        }
         str_with_0.replace(start, size_l_var, "0");
         start = str_with_0.find(l_var, pos);
     }
@@ -39,7 +47,15 @@ void replace_args(string str, vector<string> l_vars, int index){        //Фун
     pos = 0;           //С какой позиции искать (для find)
     start = str.find(l_var, pos);
     while (start != std::string::npos){
-        pos += start;
+        pos = start + 1;
+        if (start > 0 && isalpha(str[start - 1])) {        //Проверка, если переменная "A", чтобы она не была в "AND"
+            start = str.find(l_var, pos);
+            continue;
+        }
+        if (start + size_l_var < str.size() && isalpha(str[start + size_l_var])) {
+            start = str.find(l_var, pos);
+            continue;
+        }
         str.replace(start, size_l_var, "1");
         start = str.find(l_var, pos);
     }
@@ -52,13 +68,15 @@ void foo(string& str){
     int index = 0;
     int pos = 0;
     int pos_end = str.size();
-    while ((index = str.find("(")) != std::string::npos) {
-        int pos = index;
+
+    while ((index = str.rfind("(")) != std::string::npos) {     //rfind, чтобы избежать вложенных скобок (начинаем либо с крайнего правого, либо с внутр.
         int index_out = str.find(")", index + 1);
+
         string str_with_staples = str.substr(index + 1, index_out - index - 1);
         foo(str_with_staples); // Рекурсивный вызов для выражения внутри скобок
         str.replace(index, index_out - index + 1, str_with_staples);
     }
+
     while ( (index = str.find("NOT") ) != std::string::npos){
         str.replace(index , 5, std::to_string(l_not(str.substr(index, 5))));
     }
