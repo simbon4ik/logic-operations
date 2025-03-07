@@ -87,3 +87,20 @@ void foo(string& str){
         str.replace(index - 2 , 6, std::to_string(l_or(str.substr(index - 2, 6))));
     }
 }
+
+vector<string> find_l_vars(string str){
+    vector<string> l_vars;  //Вектор переменных
+    string l_var;           //Переменная, которую считываем
+    for (char symbol : str) {
+        if (symbol == '(' || symbol == ')')
+            continue;
+        if (symbol == ' '){
+            if ( (l_var != "OR") && (l_var != "AND") && (l_var != "NOT") && (std::count(l_vars.begin(), l_vars.end(), l_var) == 0 ))
+                l_vars.push_back(l_var);    //Добавляем, если считанная строка не AND, NOT, OR и еще нет в векторе
+            l_var.clear();
+            continue;
+        }
+        l_var += symbol;
+    }
+    return l_vars;
+}

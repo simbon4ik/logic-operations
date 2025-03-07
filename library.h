@@ -12,5 +12,6 @@ bool l_not(string str);
 bool l_or(string str);
 bool l_and(string str);
 void replace_args(string str, vector<string> l_vars, int index);
+vector<string> find_l_vars(string str);
 
 #endif
