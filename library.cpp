@@ -48,8 +48,17 @@ void replace_args(string str, vector<string> l_vars, int index){        //Фун
     return;
 }
 
-void foo(string& str){  //need to add proccesing ()
+void foo(string& str){  
     int index = 0;
+    int pos = 0;
+    int pos_end = str.size();
+    while ((index = str.find("(")) != std::string::npos) {
+        int pos = index;
+        int index_out = str.find(")", index + 1);
+        string str_with_staples = str.substr(index + 1, index_out - index - 1);
+        foo(str_with_staples); // Рекурсивный вызов для выражения внутри скобок
+        str.replace(index, index_out - index + 1, str_with_staples);
+    }
     while ( (index = str.find("NOT") ) != std::string::npos){
         str.replace(index , 5, std::to_string(l_not(str.substr(index, 5))));
     }
