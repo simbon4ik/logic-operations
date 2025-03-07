@@ -11,52 +11,50 @@ bool l_not(string str);
 void replace_args(string str, vector<string> l_vars, int index);
 
 int main(){
-   // printf("%d\n",l_not("NOT 0"));
-   // string str1 = "0 OR 0";
-    string str2 = "var1 OR var2 AND NOT var3";
+    string str2 = "var1 OR var2 AND NOT var3";      //Пробная строка
     str2 += ' ';    //Чтобы считать последнюю переменную
-    vector<string> l_vars;
-    string l_var;
+    vector<string> l_vars;  //Вектор переменных
+    string l_var;           //Переменная, которую считываем
     for (char symbol : str2) {
         if (symbol == '(' || symbol == ')')
             continue;
         if (symbol == ' '){
             if ( (l_var != "OR") && (l_var != "AND") && (l_var != "NOT") && (std::count(l_vars.begin(), l_vars.end(), l_var) == 0 ))
-                l_vars.push_back(l_var);
+                l_vars.push_back(l_var);    //Добавляем, если считанная строка не AND, NOT, OR и еще нет в векторе
             l_var.clear();
             continue;
         }
         l_var += symbol;
     }
-    std::cout << "l_vars.size " << l_vars.size() << std::endl;
-    replace_args(str2, l_vars, 0);
+
+    replace_args(str2, l_vars, 0);      //Заменяем аргументы на их значения (0/1)
     
-    //foo(str2);
     return 0;
 }
 
-bool l_or(string str){
+bool l_or(string str){      //Логическое или для строки типа "0 OR 1" 
     return str[0] == '1' || str[5] == '1';
 }
 
-bool l_and(string str){
+bool l_and(string str){    //Логическое и
     return str[0] == '1' && str[6] == '1';
 }
 
-bool l_not(string str){
+bool l_not(string str){    //Логическое отрицание
     return not(str[4] - '0');
 }
 
-void replace_args(string str, vector<string> l_vars, int index){
-    if (index == l_vars.size()){
-        //foo()
-        std::cout << str << std::endl;
+void replace_args(string str, vector<string> l_vars, int index){        //Функция замены аргументов на "0" и "1"
+    if (index == l_vars.size()){            //Всё заменили
+        std::cout << str;
+        foo(str);                           //Считаем логические операции
+        std::cout << " -> " << str << std::endl;    //Выводим результат для данных переменных
         return;
     }
-    string l_var = l_vars[index];
-    int size_l_var = l_var.size();
+    string l_var = l_vars[index];   //Строка (аргумент) для замены
+    int size_l_var = l_var.size();  //Размер строки
     //Подставляем 0
-    string str_with_0 = str; //Строка для заполнения 0
+    string str_with_0 = str; //Строка для заполнения 0 (чтобы потом можно было еще на 1 заменить и не испортить исходную str)
     int pos = 0;           //С какой позиции искать (для find)
     size_t start = str_with_0.find(l_var, pos);
     while (start != std::string::npos){
@@ -64,7 +62,8 @@ void replace_args(string str, vector<string> l_vars, int index){
         str_with_0.replace(start, size_l_var, "0");
         start = str_with_0.find(l_var, pos);
     }
-    replace_args(str_with_0, l_vars, index + 1);
+
+    replace_args(str_with_0, l_vars, index + 1);    //Вызываем рекурсивно для след.аргумента
        
     //Подставляем 1
     pos = 0;           //С какой позиции искать (для find)
@@ -74,7 +73,7 @@ void replace_args(string str, vector<string> l_vars, int index){
         str.replace(start, size_l_var, "1");
         start = str.find(l_var, pos);
     }
-    replace_args(str, l_vars, index + 1);
+    replace_args(str, l_vars, index + 1);   //Аналогично для 1 
      
     return;
 }
